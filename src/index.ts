@@ -18,7 +18,8 @@ const app = new Hono();
  * GET /api/{user_id}.svg
  */
 app.get("/api/:user_id.svg", async (c) => {
-  const userId = c.req.param("user_id");
+  const raw = c.req.param("user_id");
+  const userId = raw.replace(/\.svg$/, "");
   const theme = c.req.query("theme") ?? "light";
 
   try {
