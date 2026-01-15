@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { serveStatic } from 'hono/cloudflare-workers';
+import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 
 type QiitaUser = {
   id: string;
