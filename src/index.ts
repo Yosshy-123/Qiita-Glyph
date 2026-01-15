@@ -191,9 +191,10 @@ function errorSvg(c: any, message: string) {
 
 app.get("*", async (c) => {
   try {
-    return await getAssetFromKV(c.env.ASSET_NAMESPACE, c.req);
+    const asset = await getAssetFromKV(c.env.__STATIC_CONTENT, c.req);
+    return asset;
   } catch (e) {
-    return c.text('Not Found', 404);
+    return c.text("Not Found", 404);
   }
 });
 
