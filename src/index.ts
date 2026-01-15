@@ -46,9 +46,13 @@ app.get("/api/:user_id/qiita.svg", async (c) => {
     const likes = items.reduce((a, b) => a + b.likes_count, 0);
     const stocks = items.reduce((a, b) => a + b.stocks_count, 0);
 
+    const icon = await imagetobase64(
+      user.profile_image_url
+    );
+
     const svg = generateSvg({
       userId: user.name ?? user.id,
-      icon: user.profile_image_url,
+      icon,
       posts,
       likes,
       stocks,
@@ -75,6 +79,33 @@ function escapeXml(str: string) {
   return str.replace(/[<>&"]/g, (c) =>
     ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]!)
   );
+}
+
+/* ---------- img to Base64 ---------- */
+
+async function imagetobase64(url: string): Promise<string> {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error("Icon fetch failed");
+  }
+
+  const contentType =
+    res.headers.get("content-type") ?? "image/png";
+
+  const buffer = await res.arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+
+  let binary = "";
+  const chunkSize = 0x8000; // 32KB
+
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(
+      ...bytes.subarray(i, i + chunkSize)
+    );
+  }
+
+  const base64 = btoa(binary);
+  return `data:${contentType};base64,${base64}`;
 }
 
 /* ---------- SVG ---------- */
