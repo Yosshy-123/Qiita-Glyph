@@ -189,8 +189,6 @@ function errorSvg(c: any, message: string) {
   );
 }
 
-app.use("/", serveStatic({ root: "./src/public" }));
-
 export default {
   fetch: app.fetch,
 };
