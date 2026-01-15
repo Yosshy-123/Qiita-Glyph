@@ -51,7 +51,8 @@ app.get("/api/:user_id/qiita.svg", async (c) => {
     );
 
     const svg = generateSvg({
-      userId: user.name ?? user.id,
+      username: user.name ?? user.id,
+      userId: user.id,
       icon,
       posts,
       likes,
@@ -111,6 +112,7 @@ async function imagetobase64(url: string): Promise<string> {
 /* ---------- SVG ---------- */
 
 function generateSvg(data: {
+  username: string;
   userId: string;
   icon: string;
   posts: number;
@@ -150,8 +152,8 @@ function generateSvg(data: {
     clip-path="url(#avatar)"
   />
 
-  <text x="80" y="40" class="title">${escapeXml(data.userId)}</text>
-  <text x="80" y="58" class="label">Qiita Activity</text>
+  <text x="80" y="40" class="title">${escapeXml(data.username)}</text>
+  <text x="80" y="58" class="label">@${escapeXml(data.userId)}</text>
 
   <g transform="translate(20,96)">
     <text class="label">Posts</text>
