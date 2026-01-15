@@ -2,6 +2,7 @@ import { Hono } from "hono";
 
 type QiitaUser = {
   id: string;
+  name: string | null;
   profile_image_url: string;
   followers_count: number;
 };
@@ -46,7 +47,7 @@ app.get("/api/:user_id/qiita.svg", async (c) => {
     const stocks = items.reduce((a, b) => a + b.stocks_count, 0);
 
     const svg = generateSvg({
-      userId: user.id,
+      userId: user.name ?? user.id,
       icon: user.profile_image_url,
       posts,
       likes,
