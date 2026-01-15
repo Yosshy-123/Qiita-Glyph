@@ -64,7 +64,9 @@ app.get("/api/:user_id/qiita.svg", async (c) => {
   }
 });
 
-export default app.fetch;
+export default {
+  fetch: app.fetch,
+};
 
 /* ---------- XML escape ---------- */
 
