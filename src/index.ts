@@ -15,8 +15,6 @@ type QiitaItem = {
 
 const app = new Hono();
 
-app.use("/", serveStatic({ root: "./public" }));
-
 /**
  * GET /api/{user_id}/qiita.svg
  */
@@ -71,10 +69,6 @@ app.get("/api/:user_id/qiita.svg", async (c) => {
     return errorSvg(c, "Qiita API error");
   }
 });
-
-export default {
-  fetch: app.fetch,
-};
 
 /* ---------- XML escape ---------- */
 
@@ -194,3 +188,9 @@ function errorSvg(c: any, message: string) {
     { "Content-Type": "image/svg+xml; charset=utf-8" }
   );
 }
+
+app.use("/", serveStatic({ root: "./src/public" }));
+
+export default {
+  fetch: app.fetch,
+};
