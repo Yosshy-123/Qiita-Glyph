@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { serveStatic } from 'hono/cloudflare-workers';
 
 type QiitaUser = {
   id: string;
@@ -187,6 +188,8 @@ function errorSvg(c: any, message: string) {
     { "Content-Type": "image/svg+xml; charset=utf-8" }
   );
 }
+
+app.use('*', serveStatic({ root: './src/public' }));
 
 export default {
   fetch: app.fetch,
