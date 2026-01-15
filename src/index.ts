@@ -1,85 +1,3 @@
-import { Hono } from "hono";
-
-/* ---------- Types ---------- */
-
-type QiitaUser = {
-  id: string;
-  name: string | null;
-  profile_image_url: string;
-  followers_count: number;
-};
-
-type QiitaItem = {
-  likes_count: number;
-  stocks_count: number;
-};
-
-const app = new Hono();
-
-/**
- * GET /api/{user_id}/qiita.svg
- */
-app.get("/api/:user_id/qiita.svg", async (c) => {
-  const userId = c.req.param("user_id");
-  const theme = c.req.query("theme") ?? "light";
-
-  try {
-    /* ---------- User ---------- */
-
-    const userRes = await fetch(
-      `https://qiita.com/api/v2/users/${userId}`
-    );
-
-    if (!userRes.ok) {
-      return errorSvg(c, `User "${userId}" not found`);
-    }
-
-    const user: QiitaUser = await userRes.json();
-
-    const displayName =
-      user.name && user.name.trim() !== ""
-        ? user.name
-        : user.id;
-
-    /* ---------- Items ---------- */
-
-    const itemsRes = await fetch(
-      `https://qiita.com/api/v2/users/${userId}/items?per_page=100`
-    );
-
-    const items: QiitaItem[] = itemsRes.ok
-      ? await itemsRes.json()
-      : [];
-
-    const posts = items.length;
-    const likes = items.reduce((a, b) => a + b.likes_count, 0);
-    const stocks = items.reduce((a, b) => a + b.stocks_count, 0);
-
-    /* ---------- SVG ---------- */
-
-    const svg = generateSvg({
-      userId: displayName,
-      icon: user.profile_image_url,
-      posts,
-      likes,
-      stocks,
-      followers: user.followers_count,
-      theme,
-    });
-
-    return c.body(svg, 200, {
-      "Content-Type": "image/svg+xml; charset=utf-8",
-      "Cache-Control": "no-store",
-    });
-  } catch {
-    return errorSvg(c, "Qiita API error");
-  }
-});
-
-export default app;
-
-/* ---------- SVG ---------- */
-
 function generateSvg(data: {
   userId: string;
   icon: string;
@@ -104,7 +22,7 @@ function generateSvg(data: {
   </style>
 
   <defs>
-    <clipPath id="avatar">
+    <clipPath id="avatar" clipPathUnits="userSpaceOnUse">
       <circle cx="44" cy="44" r="24" />
     </clipPath>
   </defs>
@@ -122,36 +40,26 @@ function generateSvg(data: {
 
   <text x="80" y="40" class="title">${escapeXml(data.userId)}</text>
   <text x="80" y="58" class="label">Qiita Activity</text>
-  …
+
+  <g transform="translate(20,96)">
+    <text class="label" y="0">Posts</text>
+    <text class="value" y="20">${data.posts}</text>
+  </g>
+
+  <g transform="translate(120,96)">
+    <text class="label" y="0">LGTM</text>
+    <text class="value" y="20">${data.likes}</text>
+  </g>
+
+  <g transform="translate(220,96)">
+    <text class="label" y="0">Stocks</text>
+    <text class="value" y="20">${data.stocks}</text>
+  </g>
+
+  <g transform="translate(320,96)">
+    <text class="label" y="0">Followers</text>
+    <text class="value" y="20">${data.followers}</text>
+  </g>
 </svg>
 `;
-}
-
-/* ---------- Error SVG ---------- */
-
-function errorSvg(c: any, message: string) {
-  return c.body(
-    `
-<svg xmlns="http://www.w3.org/2000/svg" width="420" height="80">
-  <rect width="100%" height="100%" rx="12" fill="#fee2e2"/>
-  <text x="20" y="46" font-size="14" fill="#991b1b"
-    font-family="system-ui">
-    ${escapeXml(message)}
-  </text>
-</svg>
-`,
-    200,
-    { "Content-Type": "image/svg+xml; charset=utf-8" }
-  );
-}
-
-/* ---------- Utils ---------- */
-
-function escapeXml(str: string) {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
 }
