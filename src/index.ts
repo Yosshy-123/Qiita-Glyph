@@ -14,28 +14,6 @@ type QiitaItem = {
 
 const app = new Hono();
 
-async function fetchItems(userId: string): Promise<QiitaItem[]> {
-  let page = 1;
-  const perPage = 100;
-  let allItems: QiitaItem[] = [];
-
-  while (true) {
-    const res = await fetch(
-      `https://qiita.com/api/v2/users/${userId}/items?per_page=${perPage}&page=${page}`
-    );
-
-    if (!res.ok) break;
-
-    const items: QiitaItem[] = await res.json();
-    allItems.push(...items);
-
-    if (items.length < perPage) break;
-    page++;
-  }
-
-  return allItems;
-}
-
 /**
  * GET /api/{user_id}.svg
  */
@@ -56,7 +34,13 @@ app.get("/api/:user_id.svg", async (c) => {
     const user: QiitaUser = await userRes.json();
 
     // --- Items ---
-    const items: QiitaItem[] = await fetchItems(userId);
+    const itemsRes = await fetch(
+      `https://qiita.com/api/v2/users/${userId}/items?per_page=100`
+    );
+
+    const items: QiitaItem[] = itemsRes.ok
+      ? await itemsRes.json()
+      : [];
 
     const posts = items.length;
     const likes = items.reduce((a, b) => a + b.likes_count, 0);
