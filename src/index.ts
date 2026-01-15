@@ -189,7 +189,13 @@ function errorSvg(c: any, message: string) {
   );
 }
 
-app.get("*", serveStatic({ root: "./src/public", index: "index.html" }));
+app.get("*", async (c) => {
+  try {
+    return await getAssetFromKV(c.env.ASSET_NAMESPACE, c.req);
+  } catch (e) {
+    return c.text('Not Found', 404);
+  }
+});
 
 export default {
   fetch: app.fetch,
