@@ -16,7 +16,7 @@ You can embed it in your blog or README to showcase your activity at a glance.
 
 You can get the SVG using the following URL format:
 
-```
+```markdown
 [![Qiita Glyph](https://qiita-glyph.yosshy-123.workers.dev/api/[user_id]/qiita.svg)](https://qiita.com/[user_id])
 ```
 
@@ -27,7 +27,7 @@ You can get the SVG using the following URL format:
 
 Add `?theme=dark` to the URL to get a dark-themed SVG:
 
-```
+```markdown
 [![Qiita Glyph](https://qiita-glyph.yosshy-123.workers.dev/api/[user_id]/qiita.svg?theme=dark)](https://qiita.com/[user_id])
 ```
 
