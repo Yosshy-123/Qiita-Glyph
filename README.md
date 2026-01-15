@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Qiita Glyph</h1>
-  <h3>Visualize your Qiita activity as a single SVG.</h3>
+  <h3>Visualize your Qiita activity as a single SVG</h3>
 </div>
 
 ---
