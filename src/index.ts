@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { serveStatic } from "hono/cloudflare-workers";
 
 type QiitaUser = {
   id: string;
@@ -13,6 +14,8 @@ type QiitaItem = {
 };
 
 const app = new Hono();
+
+app.use("/", serveStatic({ root: "./public" }));
 
 /**
  * GET /api/{user_id}/qiita.svg
