@@ -1,0 +1,264 @@
+/* =========================================================
+   Design Tokens
+   ========================================================= */
+
+:root {
+  --bg: #0b1020;
+  --panel: #0f172a;
+  --surface: #020617;
+
+  --border: #1e293b;
+  --border-hover: #334155;
+
+  --text: #e5e7eb;
+  --sub: #94a3b8;
+
+  --accent: #38bdf8;
+  --accent-ring: rgba(56, 189, 248, 0.3);
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --font: system-ui, -apple-system, BlinkMacSystemFont;
+}
+
+/* =========================================================
+   Reset / Base
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =========================================================
+   Layout
+   ========================================================= */
+
+.app {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  min-height: 100vh;
+}
+
+.panel {
+  padding: 32px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+
+.preview {
+  display: grid;
+  place-items: center;
+  padding: 32px;
+}
+
+/* =========================================================
+   Typography
+   ========================================================= */
+
+h1 {
+  font-size: 24px;
+  margin: 0 0 8px;
+}
+
+.desc {
+  font-size: 14px;
+  color: var(--sub);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--sub);
+  margin-bottom: 6px;
+}
+
+/* =========================================================
+   Form Fields
+   ========================================================= */
+
+.field {
+  margin-bottom: 20px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: transparent;
+  color: var(--text);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+/* ---------- input ---------- */
+
+input::placeholder {
+  color: #64748b;
+}
+
+input:hover {
+  border-color: var(--border-hover);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+/* ---------- select ---------- */
+
+select {
+  padding-right: 36px;
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'>\
+<path d='M6 8l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/>\
+</svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+select:hover {
+  border-color: var(--border-hover);
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* option (dark mode safety) */
+select option {
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+/* =========================================================
+   Export Buttons
+   ========================================================= */
+
+.exports {
+  display: flex;
+  gap: 8px;
+  margin: 24px 0 12px;
+}
+
+.exports button {
+  flex: 1;
+  padding: 8px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.exports button:hover {
+  border-color: var(--accent);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.exports button:active {
+  background: rgba(56, 189, 248, 0.15);
+}
+
+/* =========================================================
+   Code Output
+   ========================================================= */
+
+code {
+  display: block;
+  padding: 12px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  word-break: break-all;
+}
+
+/* =========================================================
+   Preview / Image
+   ========================================================= */
+
+.preview-inner {
+  position: relative;
+}
+
+img {
+  max-width: 440px;
+  height: auto;
+  display: block;
+}
+
+/* =========================================================
+   Loader
+   ========================================================= */
+
+.loader {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+}
+
+.loader::after {
+  content: "";
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+
+.loading .loader {
+  display: grid;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
