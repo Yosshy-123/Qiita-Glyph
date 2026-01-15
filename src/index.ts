@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 
 type QiitaUser = {
   id: string;
@@ -188,15 +187,6 @@ function errorSvg(c: any, message: string) {
     { "Content-Type": "image/svg+xml; charset=utf-8" }
   );
 }
-
-app.get("*", async (c) => {
-  try {
-    const asset = await getAssetFromKV(c.env.__STATIC_CONTENT, c.req);
-    return asset;
-  } catch (e) {
-    return c.text("Not Found", 404);
-  }
-});
 
 export default {
   fetch: app.fetch,
