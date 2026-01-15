@@ -15,11 +15,10 @@ type QiitaItem = {
 const app = new Hono();
 
 /**
- * GET /api/{user_id}.svg
+ * GET /{user_id}
  */
-app.get("/api/:user_id.svg", async (c) => {
-  const raw = c.req.param("user_id");
-  const userId = raw.replace(/\.svg$/, "");
+app.get("/:user_id", async (c) => {
+  const userId = c.req.param("user_id");
   const theme = c.req.query("theme") ?? "light";
 
   try {
