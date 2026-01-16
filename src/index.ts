@@ -317,7 +317,7 @@ function createStatBox(
       width="20"
       height="20"
       viewBox="0 0 32 32"
-      fill="${valueColor}"
+      style="color: ${valueColor}"
       aria-hidden="true"
     >
       ${iconPath}
