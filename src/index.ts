@@ -280,10 +280,10 @@ function generateSvg(data: {
     </text>
 
     <g transform="translate(16,84)">
-      ${createStatBox(0, 0, postsStr, "Posts", postsIconSvg(), fg, sub)}
-      ${createStatBox(98, 0, likesStr, "LGTM", heartIconSvg(), fg, sub)}
-      ${createStatBox(196, 0, stocksStr, "Stocks", bookmarkIconSvg(), fg, sub)}
-      ${createStatBox(294, 0, followersStr, "Followers", userIconSvg(), fg, sub)}
+      ${createStatBox(0,   0, postsStr,     "Posts",     postsIconSvg(),    fg,  sub,  0)}
+      ${createStatBox(98,  0, likesStr,     "LGTM",      heartIconSvg(),    accent, sub,  1)}
+      ${createStatBox(196, 0, stocksStr,    "Stocks",    bookmarkIconSvg(), fg,  sub, -1)}
+      ${createStatBox(294, 0, followersStr, "Followers", userIconSvg(),     fg,  sub,  0)}
     </g>
   </g>
 </svg>
@@ -298,11 +298,22 @@ function formatNumber(n: number) {
   }
 }
 
-function createStatBox(x: number, y: number, value: string, label: string, iconSvg: string, valueColor: string, labelColor: string) {
+function createStatBox(
+  x: number,
+  y: number,
+  value: string,
+  label: string,
+  iconSvg: string,
+  valueColor: string,
+  labelColor: string,
+  iconOffsetY: number = 0
+) {
+  const iconTranslateY = 8 + iconOffsetY;
+
   return `
   <g transform="translate(${x},${y})" aria-hidden="false">
     <rect x="0" y="0" width="86" height="48" rx="8" fill="transparent"/>
-    <g transform="translate(10,8)" style="color: ${valueColor}">
+    <g transform="translate(10,${iconTranslateY})" style="color: ${valueColor}">
       ${iconSvg}
     </g>
     <text x="34" y="18" font-family="system-ui" font-size="14" font-weight="700" fill="${valueColor}">${value}</text>
