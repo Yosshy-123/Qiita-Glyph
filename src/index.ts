@@ -82,7 +82,7 @@ app.get("/:user_id", async (c) => {
 
     return c.body(svg, 200, {
       "Content-Type": "image/svg+xml; charset=utf-8",
-      "Cache-Control": "public, max-age=0, s-maxage=86400, stale-while-revalidate=86400" // CDN Cache 24h
+      "Cache-Control": "public, max-age=0, s-maxage=86400, stale-while-revalidate=86400", // CDN Cache 24h
     });
   } catch {
     return errorSvg(c, "Qiita API error");
@@ -233,7 +233,7 @@ function errorSvg(c: any, message: string) {
     200,
     {
       "Content-Type": "image/svg+xml; charset=utf-8",
-      "Cache-Control": "no-store"
+      "Cache-Control": "no-store",
     }
   );
 }
