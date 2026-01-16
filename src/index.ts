@@ -78,8 +78,15 @@ app.get("/:user_id", async (c) => {
   const userId = c.req.param("user_id");
   const theme = c.req.query("theme") === "dark" ? "dark" : "light";
 
+  const cache = caches.default; // Cloudflare Workers default cache
+  const cacheKey = new Request(c.req.url, { method: 'GET' });
+
+  const cachedResponse = await cache.match(cacheKey);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+
   try {
-    // --- User ---
     const user = await fetchQiita<QiitaUser>(
       `https://qiita.com/api/v2/users/${userId}`
     );
@@ -90,11 +97,8 @@ app.get("/:user_id", async (c) => {
     const likes = items.reduce((a, b) => a + b.likes_count, 0);
     const stocks = items.reduce((a, b) => a + b.stocks_count, 0);
 
-    const icon = await imagetobase64(
-      user.profile_image_url
-    );
+    const icon = await imagetobase64(user.profile_image_url);
 
-    // --- unique clipPath id ---
     const clipId = `avatar-${makeSafeId(user.id)}`;
 
     const name = resolveUsername(user);
@@ -111,19 +115,22 @@ app.get("/:user_id", async (c) => {
       clipId,
     });
 
-    return c.body(svg, 200, {
-      "Content-Type": "image/svg+xml; charset=utf-8",
-      "Cache-Control": "public, max-age=0, s-maxage=86400, stale-while-revalidate=86400", // CDN Cache 24h
+    const response = new Response(svg, {
+      status: 200,
+      headers: {
+        "Content-Type": "image/svg+xml; charset=utf-8",
+        "Cache-Control": "public, max-age=0, s-maxage=86400, stale-while-revalidate=86400",
+      },
     });
+    await cache.put(cacheKey, response.clone());
+    return response;
   } catch (err: any) {
     if (err?.status === 404) {
       return errorSvg(c, `User "${userId}" not found`);
     }
-
     if (err?.status === 429) {
       return errorSvg(c, "Rate limit exceeded");
     }
-
     return errorSvg(c, err?.message ?? "Qiita API error");
   }
 });
