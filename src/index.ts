@@ -305,29 +305,35 @@ function createStatBox(
   label: string,
   iconPath: string,
   valueColor: string,
-  labelColor: string
+  labelColor: string,
 ) {
+  const centerY = 20;
+  const svgSize = 20;
+  const svgY = centerY - svgSize / 2;
+
   return `
   <g transform="translate(${x},${y})">
     <rect x="0" y="0" width="86" height="48" rx="8" fill="transparent"/>
 
     <svg
       x="10"
-      y="10"
-      width="20"
-      height="20"
+      y="${svgY}"
+      width="${svgSize}"
+      height="${svgSize}"
       viewBox="0 0 32 32"
-      style="color: ${valueColor}"
+      preserveAspectRatio="xMidYMid meet"
+      style="color: ${valueColor}; display:block;"
       aria-hidden="true"
     >
       ${iconPath}
     </svg>
 
-    <text x="34" y="18"
+    <text x="34" y="${centerY}"
       font-family="system-ui"
       font-size="14"
       font-weight="700"
-      fill="${valueColor}">
+      fill="${valueColor}"
+      dominant-baseline="middle">
       ${value}
     </text>
 
