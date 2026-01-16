@@ -65,6 +65,9 @@ app.get("/:user_id", async (c) => {
       user.profile_image_url
     );
 
+    // --- unique clipPath id ---
+    const clipId = `avatar-${makeSafeId(user.id)}`;
+
     const svg = generateSvg({
       username: user.name ?? user.id,
       userId: user.id,
@@ -74,6 +77,7 @@ app.get("/:user_id", async (c) => {
       stocks,
       followers: user.followers_count,
       theme,
+      clipId,
     });
 
     return c.body(svg, 200, {
@@ -97,6 +101,12 @@ function escapeXml(str: string) {
   );
 }
 
+/* ---------- id sanitize ---------- */
+
+function makeSafeId(s: string) {
+  return s.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 64);
+}
+
 /* ---------- img to Base64 ---------- */
 
 async function imagetobase64(url: string): Promise<string> {
@@ -109,15 +119,23 @@ async function imagetobase64(url: string): Promise<string> {
     res.headers.get("content-type") ?? "image/png";
 
   const buffer = await res.arrayBuffer();
-  const bytes = new Uint8Array(buffer);
 
+  if (typeof (globalThis as any).Buffer !== "undefined") {
+    const base64 = (globalThis as any).Buffer.from(buffer).toString("base64");
+    return `data:${contentType};base64,${base64}`;
+  }
+
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000; // 32KB per chunk
   let binary = "";
-  const chunkSize = 0x8000; // 32KB
 
   for (let i = 0; i < bytes.length; i += chunkSize) {
-    binary += String.fromCharCode(
-      ...bytes.subarray(i, i + chunkSize)
-    );
+    const chunk = bytes.subarray(i, i + chunkSize);
+    let chunkStr = "";
+    for (let j = 0; j < chunk.length; j++) {
+      chunkStr += String.fromCharCode(chunk[j]);
+    }
+    binary += chunkStr;
   }
 
   const base64 = btoa(binary);
@@ -135,12 +153,16 @@ function generateSvg(data: {
   stocks: number;
   followers: number;
   theme: string;
+  clipId: string;
 }) {
   const dark = data.theme === "dark";
 
   const bg = dark ? "#020617" : "#ffffff";
   const fg = dark ? "#e5e7eb" : "#020617";
   const sub = dark ? "#94a3b8" : "#475569";
+
+  const usernameEsc = escapeXml(data.username);
+  const userIdEsc = escapeXml(data.userId);
 
   return `
 <svg xmlns="http://www.w3.org/2000/svg" width="420" height="160">
@@ -151,7 +173,7 @@ function generateSvg(data: {
   </style>
 
   <defs>
-    <clipPath id="avatar" clipPathUnits="userSpaceOnUse">
+    <clipPath id="${data.clipId}" clipPathUnits="userSpaceOnUse">
       <circle cx="44" cy="44" r="24" />
     </clipPath>
   </defs>
@@ -164,11 +186,11 @@ function generateSvg(data: {
     y="20"
     width="48"
     height="48"
-    clip-path="url(#avatar)"
+    clip-path="url(#${data.clipId})"
   />
 
-  <text x="80" y="40" class="title">${escapeXml(data.username)}</text>
-  <text x="80" y="58" class="label">@${escapeXml(data.userId)}</text>
+  <text x="80" y="40" class="title">${usernameEsc}</text>
+  <text x="80" y="58" class="label">@${userIdEsc}</text>
 
   <g transform="translate(20,96)">
     <text class="label">Posts</text>
