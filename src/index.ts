@@ -368,7 +368,7 @@ function bookmarkIconSvg() {
 
 function userIconSvg() {
   return `
-    <g transform="translate(0,-3)">
+    <g transform="translate(0,-2)">
       <circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/>
       <path d="M4 20c1.5-3 5-5 8-5s6.5 2 8 5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/>
     </g>
