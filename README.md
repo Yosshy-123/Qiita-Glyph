@@ -16,8 +16,8 @@ You can embed it in your blog or README to showcase your activity at a glance.
 
 You can get the SVG using the following URL format:
 
-```markdown
-[![Qiita Glyph](https://qiita-glyph.yosshy-123.workers.dev/[user_id])](https://qiita.com/[user_id])
+```
+https://qiita-glyph.yosshy-123.workers.dev/[user_id]
 ```
 
 * Replace `[user_id]` with your Qiita user ID.
@@ -27,8 +27,8 @@ You can get the SVG using the following URL format:
 
 Add `?theme=dark` to the URL to get a dark-themed SVG:
 
-```markdown
-[![Qiita Glyph](https://qiita-glyph.yosshy-123.workers.dev/[user_id]?theme=dark)](https://qiita.com/[user_id])
+```
+https://qiita-glyph.yosshy-123.workers.dev/[user_id]?theme=dark
 ```
 
 ---
@@ -39,6 +39,14 @@ Light theme:
 
 [![Qiita Glyph](https://qiita-glyph.yosshy-123.workers.dev/Yosshy_123)](https://qiita.com/Yosshy_123)
 
+```markdown
+[![Qiita Glyph](https://qiita-glyph.yosshy-123.workers.dev/Yosshy_123)](https://qiita.com/Yosshy_123)
+```
+
 Dark theme:
 
 [![Qiita Glyph](https://qiita-glyph.yosshy-123.workers.dev/Yosshy_123?theme=dark)](https://qiita.com/Yosshy_123)
+
+```markdown
+[![Qiita Glyph](https://qiita-glyph.yosshy-123.workers.dev/Yosshy_123?theme=dark)](https://qiita.com/Yosshy_123)
+```
