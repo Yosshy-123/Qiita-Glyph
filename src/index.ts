@@ -232,14 +232,6 @@ function generateSvg(data: {
       <stop offset="100%" stop-color="#7ce24a" stop-opacity="0.95"/>
     </linearGradient>
 
-    <filter id="${cardShadowId}" x="-50%" y="-50%" width="200%" height="200%">
-      <feOffset result="off" in="SourceAlpha" dx="0" dy="6"/>
-      <feGaussianBlur result="blur" in="off" stdDeviation="8"/>
-      <feColorMatrix in="blur" type="matrix"
-        values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.18 0"/>
-      <feBlend in="SourceGraphic" in2="blur" mode="normal"/>
-    </filter>
-
     <clipPath id="${clipId}">
       <circle cx="44" cy="44" r="22" />
     </clipPath>
@@ -253,7 +245,7 @@ function generateSvg(data: {
   <rect width="100%" height="100%" rx="12" fill="url(#${bgGradId})"/>
 
   <g transform="translate(10,10)">
-    <rect x="0" y="0" width="400" height="140" rx="12" fill="${cardBg}" filter="url(#${cardShadowId})"/>
+    <rect x="0" y="0" width="400" height="140" rx="12" fill="${cardBg}" />
     <rect x="0" y="0" width="400" height="140" rx="12" fill="url(#${panelGlossId})" style="mix-blend-mode: overlay"/>
 
     <circle cx="44" cy="44" r="26" fill="${dark ? '#071617' : '#f1f5f9'}"/>
