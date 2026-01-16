@@ -12,24 +12,52 @@ type QiitaItem = {
   stocks_count: number;
 };
 
+type QiitaApiError = {
+  message?: string;
+  type?: string;
+};
+
 const app = new Hono();
+
+async function fetchQiita<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+
+  if (res.ok) {
+    return res.json() as Promise<T>;
+  }
+
+  let message = `Qiita API error (${res.status})`;
+
+  try {
+    const err: QiitaApiError = await res.json();
+    if (err?.message) {
+      message = err.message;
+    }
+  } catch {
+    // Ignore non-JSON formats
+  }
+
+  const error = new Error(message) as Error & {
+    status?: number;
+    type?: string;
+  };
+
+  error.status = res.status;
+  throw error;
+}
 
 async function fetchAllItems(userId: string): Promise<QiitaItem[]> {
   let items: QiitaItem[] = [];
   let page = 1;
 
   while (true) {
-    const res = await fetch(
+    const data = await fetchQiita<QiitaItem[]>(
       `https://qiita.com/api/v2/users/${userId}/items?per_page=100&page=${page}`
     );
 
-    if (!res.ok) break;
-
-    const data: QiitaItem[] = await res.json();
-
     if (data.length === 0) break;
 
-    items = items.concat(data);
+    items = items.push(...data);
     page++;
   }
 
@@ -48,19 +76,13 @@ function resolveUsername(user: QiitaUser): string {
  */
 app.get("/:user_id", async (c) => {
   const userId = c.req.param("user_id");
-  const theme = c.req.query("theme") ?? "light";
+  const theme = c.req.query("theme") === "dark" ? "dark" : "light";
 
   try {
     // --- User ---
-    const userRes = await fetch(
+    const user = await fetchQiita<QiitaUser>(
       `https://qiita.com/api/v2/users/${userId}`
     );
-
-    if (!userRes.ok) {
-      return errorSvg(c, `User "${userId}" not found`);
-    }
-
-    const user: QiitaUser = await userRes.json();
 
     const items = await fetchAllItems(userId);
 
@@ -93,8 +115,16 @@ app.get("/:user_id", async (c) => {
       "Content-Type": "image/svg+xml; charset=utf-8",
       "Cache-Control": "public, max-age=0, s-maxage=86400, stale-while-revalidate=86400", // CDN Cache 24h
     });
-  } catch {
-    return errorSvg(c, "Qiita API error");
+  } catch (err: any) {
+    if (err?.status === 404) {
+      return errorSvg(c, `User "${userId}" not found`);
+    }
+
+    if (err?.status === 429) {
+      return errorSvg(c, "Rate limit exceeded");
+    }
+
+    return errorSvg(c, err?.message ?? "Qiita API error");
   }
 });
 
