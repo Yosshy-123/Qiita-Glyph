@@ -51,11 +51,11 @@ async function fetchAllItems(userId: string): Promise<QiitaItem[]> {
   let page = 1;
 
   while (true) {
-    const data = await fetchQiita<unknown>(
+    const data = await fetchQiita<QiitaItem[]>(
       `https://qiita.com/api/v2/users/${userId}/items?per_page=100&page=${page}`
     );
 
-    if (!Array.isArray(data) || data.length === 0) break;
+    if (data.length === 0) break;
 
     items.push(...data);
     page++;
@@ -390,7 +390,7 @@ function errorSvg(c: any, message: string) {
   </text>
 </svg>
 `,
-    200,
+    500,
     {
       "Content-Type": "image/svg+xml; charset=utf-8",
       "Cache-Control": "no-store",
