@@ -47,17 +47,17 @@ async function fetchQiita<T>(url: string): Promise<T> {
 }
 
 async function fetchAllItems(userId: string): Promise<QiitaItem[]> {
-  let items: QiitaItem[] = [];
+  const items: QiitaItem[] = [];
   let page = 1;
 
   while (true) {
-    const data = await fetchQiita<QiitaItem[]>(
+    const data = await fetchQiita<unknown>(
       `https://qiita.com/api/v2/users/${userId}/items?per_page=100&page=${page}`
     );
 
-    if (data.length === 0) break;
+    if (!Array.isArray(data) || data.length === 0) break;
 
-    items = items.push(...data);
+    items.push(...data);
     page++;
   }
 
