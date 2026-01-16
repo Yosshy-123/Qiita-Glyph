@@ -279,11 +279,6 @@ function generateSvg(data: {
       @${userIdEsc}
     </text>
 
-    <g transform="translate(84,64)">
-      <rect x="0" y="0" rx="6" height="20" width="74" fill="none" stroke="${accent}" stroke-width="1" />
-      <text x="8" y="14" font-size="11" font-weight="600" fill="${accent}" font-family="system-ui">Qiita</text>
-    </g>
-
     <g transform="translate(16,92)">
       ${createStatBox(0, 0, postsStr, "Posts", postsIconSvg(), fg, sub)}
       ${createStatBox(98, 0, likesStr, "LGTM", heartIconSvg(), accent, sub)}
