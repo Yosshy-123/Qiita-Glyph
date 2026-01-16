@@ -36,6 +36,13 @@ async function fetchAllItems(userId: string): Promise<QiitaItem[]> {
   return items;
 }
 
+function resolveUsername(user: QiitaUser): string {
+  if (user.name && user.name.trim() !== "") {
+    return user.name;
+  }
+  return user.id;
+}
+
 /**
  * GET /{user_id}
  */
@@ -68,8 +75,10 @@ app.get("/:user_id", async (c) => {
     // --- unique clipPath id ---
     const clipId = `avatar-${makeSafeId(user.id)}`;
 
+    const name = resolveUsername(user);
+
     const svg = generateSvg({
-      username: user.name ?? user.id,
+      username: name,
       userId: user.id,
       icon,
       posts,
