@@ -213,7 +213,6 @@ function generateSvg(data: {
   const stocksStr = formatNumber(data.stocks);
   const followersStr = formatNumber(data.followers);
 
-  const bgGradId = `bgGrad-${uid}`;
   const accentGradId = `accentGrad-${uid}`;
   const cardShadowId = `cardShadow-${uid}`;
   const panelGlossId = `panelGloss-${uid}`;
@@ -222,10 +221,8 @@ function generateSvg(data: {
   return `
 <svg xmlns="http://www.w3.org/2000/svg" width="420" height="160" viewBox="0 0 420 160" role="img" aria-label="Qiita profile card for ${usernameEsc}">
   <defs>
-    <linearGradient id="${bgGradId}" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0%" stop-color="${bgTop}" stop-opacity="1"/>
-      <stop offset="100%" stop-color="${bgBottom}" stop-opacity="1"/>
-    </linearGradient>
+    <stop offset="0%" stop-color="${bgTop}" stop-opacity="1"/>
+    <stop offset="100%" stop-color="${bgBottom}" stop-opacity="1"/>
 
     <linearGradient id="${accentGradId}" x1="0" x2="1">
       <stop offset="0%" stop-color="${accent}" stop-opacity="1"/>
@@ -242,11 +239,9 @@ function generateSvg(data: {
     </linearGradient>
   </defs>
 
-  <rect width="100%" height="100%" rx="12" fill="url(#${bgGradId})"/>
-
-  <g transform="translate(10,10)">
-    <rect x="0" y="0" width="400" height="140" rx="12" fill="${cardBg}" />
-    <rect x="0" y="0" width="400" height="140" rx="12" fill="url(#${panelGlossId})" style="mix-blend-mode: overlay"/>
+  <g>
+    <rect x="0" y="0" width="420" height="160" rx="12" fill="${cardBg}" />
+    <rect x="0" y="0" width="420" height="160" rx="12" fill="url(#${panelGlossId})" style="mix-blend-mode: overlay"/>
 
     <circle cx="44" cy="44" r="26" fill="${dark ? '#071617' : '#f1f5f9'}"/>
     <circle cx="44" cy="44" r="26" stroke="url(#${accentGradId})" stroke-width="2" fill="none" />
