@@ -87,10 +87,7 @@ app.get("/:user_id", async (c) => {
   }
 
   try {
-    const user = await fetchQiita<QiitaUser>(
-      `https://qiita.com/api/v2/users/${userId}`
-    );
-
+    const user = await fetchQiita<QiitaUser>(`https://qiita.com/api/v2/users/${userId}`);
     const items = await fetchAllItems(userId);
 
     const posts = items.length;
@@ -124,14 +121,25 @@ app.get("/:user_id", async (c) => {
     });
     await cache.put(cacheKey, response.clone());
     return response;
-  } catch (err: any) {
-    if (err?.status === 404) {
-      return errorSvg(c, `User "${userId}" not found`);
+  } catch (err: unknown) {
+    let message = "Qiita API error";
+    let status = 500;
+
+    if (err instanceof Error) {
+      message = err.message;
+      if ("status" in err && typeof (err as any).status === "number") {
+        status = (err as any).status;
+      }
     }
-    if (err?.status === 429) {
-      return errorSvg(c, "Rate limit exceeded");
+
+    if (status === 404) {
+      return errorSvg(c, `User "${userId}" not found`, 404);
     }
-    return errorSvg(c, err?.message ?? "Qiita API error");
+    if (status === 429) {
+      return errorSvg(c, "Rate limit exceeded", 429);
+    }
+
+    return errorSvg(c, message, status);
   }
 });
 
@@ -163,10 +171,9 @@ async function imagetobase64(url: string): Promise<string> {
 
   const buffer = await res.arrayBuffer();
 
-  if (typeof (globalThis as any).Buffer !== "undefined") {
-    const base64 = (globalThis as any).Buffer.from(buffer).toString("base64");
-    return `data:${contentType};base64,${base64}`;
-  }
+  // Buffer is always available in Workers
+  const base64 = (globalThis as any).Buffer.from(buffer).toString("base64");
+  return `data:${contentType};base64,${base64}`;
 
   const bytes = new Uint8Array(buffer);
   const chunkSize = 0x8000;
@@ -402,7 +409,9 @@ function userIconSvg(color: string) {
 }
 
 /* ---------- Error SVG ---------- */
-function errorSvg(c: any, message: string) {
+import type { Context } from "hono";
+
+function errorSvg(c: Context, message: string, status = 500) {
   const safeMessage = escapeXml(message);
 
   return c.body(
@@ -417,10 +426,11 @@ function errorSvg(c: any, message: string) {
   </text>
 </svg>
 `,
-    500,
+    status,
     {
       "Content-Type": "image/svg+xml; charset=utf-8",
       "Cache-Control": "no-store",
     }
   );
 }
+
