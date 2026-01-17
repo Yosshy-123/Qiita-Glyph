@@ -303,6 +303,8 @@ function createStatBox(
 ) {
   return `
   <g transform="translate(${x},${y})">
+    <rect x="0" y="0" width="86" height="48" rx="8" fill="transparent"/>
+
     <svg
       x="10"
       y="10"
@@ -339,10 +341,7 @@ function postsIconSvg() {
     <g transform="scale(1.3)">
       <path 
         d="M15 8H17M15 12H17M17 16H7M7 8V12H11V8H7ZM5 20H19C20.1046 20 21 19.1046 21 18V6C21 4.89543 20.1046 4 19 4H5C3.89543 4 3 4.89543 3 6V18C3 19.1046 3.89543 20 5 20Z" 
-        stroke="currentColor" 
-        stroke-linecap="round" 
-        stroke-linejoin="round" 
-        stroke-width="2"
+        fill="currentColor" 
       />
     </g>
   `;
@@ -354,10 +353,7 @@ function heartIconSvg() {
     <g transform="scale(1.3)">
       <path 
         d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        fill="currentColor"
       />
     </g>
   `;
@@ -393,10 +389,8 @@ function userIconSvg() {
                C8.79086 11 7 9.20914 7 7
                C7 4.79086 8.79086 3 11 3
                C13.2091 3 15 4.79086 15 7Z"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
+            fill="currentColor"
+      />
     </g>
   `;
 }
