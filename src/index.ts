@@ -76,7 +76,6 @@ function resolveUsername(user: QiitaUser): string {
  */
 app.get("/:user_id", async (c) => {
   const userId = c.req.param("user_id");
-  const userId = c.req.param("user_id");
   const theme = c.req.query("theme") === "dark" ? "dark" : "light";
 
   const cache = caches.default; // Cloudflare Workers default cache
