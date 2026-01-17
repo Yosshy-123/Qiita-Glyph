@@ -166,11 +166,30 @@ async function imagetobase64(url: string): Promise<string> {
     throw new Error("Icon fetch failed");
   }
 
-  const contentType = res.headers.get("content-type") ?? "image/png";
+  const contentType =
+    res.headers.get("content-type") ?? "image/png";
+
   const buffer = await res.arrayBuffer();
 
-  // Buffer exists in Cloudflare Workers, so simplified
-  const base64 = Buffer.from(buffer).toString("base64");
+  if (typeof (globalThis as any).Buffer !== "undefined") {
+    const base64 = (globalThis as any).Buffer.from(buffer).toString("base64");
+    return `data:${contentType};base64,${base64}`;
+  }
+
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  let binary = "";
+
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    let chunkStr = "";
+    for (let j = 0; j < chunk.length; j++) {
+      chunkStr += String.fromCharCode(chunk[j]);
+    }
+    binary += chunkStr;
+  }
+
+  const base64 = btoa(binary);
   return `data:${contentType};base64,${base64}`;
 }
 
@@ -415,4 +434,3 @@ function errorSvg(c: Context, message: string, status = 500) {
     }
   );
 }
-
