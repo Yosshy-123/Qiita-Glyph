@@ -303,7 +303,7 @@ function createStatBox(
 ) {
   return `
   <g transform="translate(${x},${y})">
-    <rect x="0" y="0" width="86" height="48" rx="8" fill="none"/>
+    <rect x="0" y="0" width="86" height="48" rx="8" />
 
     <svg
       x="10"
