@@ -1,0 +1,36 @@
+This project includes third-party assets.
+
+--------------------------------------------------
+Icons
+--------------------------------------------------
+
+1. "Article Line SVG"
+   Author: Raminrzdh
+   Source: https://www.svgrepo.com/svg/430389/article-line
+   License: Creative Commons Attribution (CC BY)
+   Modifications: Stroke color and scale adjusted
+
+2. "Heart SVG Vector"
+   Author: Dazzle UI
+   Source: https://www.svgrepo.com/svg/532473/heart
+   License: Creative Commons Attribution (CC BY)
+   Modifications: Stroke color and scale adjusted
+
+3. "Bookmark Outline"
+   Author: Eva Icons
+   Source: https://www.svgrepo.com/svg/305403/bookmark-outline
+   License: MIT License
+   Modifications: Color and scale adjusted
+
+4. "User Heart Alt 1 SVG"
+   Author: Dazzle UI
+   Source: https://www.svgrepo.com/svg/532372/user-heart-alt-1
+   License: Creative Commons Attribution (CC BY)
+   Modifications: Stroke color and scale adjusted
+
+--------------------------------------------------
+Notes
+--------------------------------------------------
+
+The above icons are used as inline SVGs within generated images.
+All trademarks and copyrights belong to their respective owners.
