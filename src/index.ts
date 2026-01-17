@@ -140,7 +140,6 @@ export default {
 };
 
 /* ---------- XML escape ---------- */
-
 function escapeXml(str: string) {
   return str.replace(/[<>&"]/g, (c) =>
     ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" }[c]!)
@@ -148,13 +147,11 @@ function escapeXml(str: string) {
 }
 
 /* ---------- id sanitize ---------- */
-
 function makeSafeId(s: string) {
   return s.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 64);
 }
 
 /* ---------- img to Base64 ---------- */
-
 async function imagetobase64(url: string): Promise<string> {
   const res = await fetch(url);
   if (!res.ok) {
@@ -189,7 +186,6 @@ async function imagetobase64(url: string): Promise<string> {
 }
 
 /* ---------- SVG ---------- */
-
 function generateSvg(data: {
   username: string;
   userId: string;
@@ -221,7 +217,6 @@ function generateSvg(data: {
   const followersStr = formatNumber(data.followers);
 
   const accentGradId = `accentGrad-${uid}`;
-  const cardShadowId = `cardShadow-${uid}`;
   const panelGlossId = `panelGloss-${uid}`;
   const clipId = data.clipId;
 
@@ -274,10 +269,10 @@ function generateSvg(data: {
     </text>
 
     <g transform="translate(16,84)">
-      ${createStatBox(0, 0, postsStr, "Posts", postsIconSvg(), fg, sub)}
-      ${createStatBox(98, 0, likesStr, "LGTM", heartIconSvg(), fg, sub)}
-      ${createStatBox(196, 0, stocksStr, "Stocks", bookmarkIconSvg(), fg, sub)}
-      ${createStatBox(294, 0, followersStr, "Followers", userIconSvg(), fg, sub)}
+      ${createStatBox(0, 0, postsStr, "Posts", postsIconSvg, fg, sub)}
+      ${createStatBox(98, 0, likesStr, "LGTM", heartIconSvg, fg, sub)}
+      ${createStatBox(196, 0, stocksStr, "Stocks", bookmarkIconSvg, fg, sub)}
+      ${createStatBox(294, 0, followersStr, "Followers", userIconSvg, fg, sub)}
     </g>
   </g>
 </svg>
@@ -297,7 +292,7 @@ function createStatBox(
   y: number,
   value: string,
   label: string,
-  iconPath: string,
+  iconSvgFn: (color: string) => string,
   valueColor: string,
   labelColor: string
 ) {
@@ -311,10 +306,9 @@ function createStatBox(
       width="20"
       height="20"
       viewBox="0 0 32 32"
-      style="color: ${valueColor}"
       aria-hidden="true"
     >
-      ${iconPath}
+      ${iconSvgFn(valueColor)}
     </svg>
 
     <text x="34" y="18"
@@ -335,43 +329,51 @@ function createStatBox(
   `;
 }
 
-function postsIconSvg() {
+/* ---------- Icons with explicit color and copyright ---------- */
+
+function postsIconSvg(color: string) {
   return `
     <!-- "Article Line" by Raminrzdh, https://www.svgrepo.com/svg/430389/article-line (CC Attribution) -->
     <g transform="scale(1.3)">
       <path 
         d="M15 8H17M15 12H17M17 16H7M7 8V12H11V8H7ZM5 20H19C20.1046 20 21 19.1046 21 18V6C21 4.89543 20.1046 4 19 4H5C3.89543 4 3 4.89543 3 6V18C3 19.1046 3.89543 20 5 20Z" 
-        fill="currentColor" 
+        stroke="${color}" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        stroke-width="2"
       />
     </g>
   `;
 }
 
-function heartIconSvg() {
+function heartIconSvg(color: string) {
   return `
     <!-- "Heart SVG Vector" by Dazzle UI, https://www.svgrepo.com/svg/532473/heart (CC Attribution) -->
     <g transform="scale(1.3)">
       <path 
         d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z"
-        fill="currentColor"
+        stroke="${color}"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       />
     </g>
   `;
 }
 
-function bookmarkIconSvg() {
+function bookmarkIconSvg(color: string) {
   return `
     <!-- "Bookmark Outline" by Eva Icons, https://www.svgrepo.com/svg/305403/bookmark-outline (MIT License) -->
     <g transform="scale(1.3)">
       <path 
         d="M6.09 21.06a1 1 0 0 1-1-1L4.94 5.4a2.26 2.26 0 0 1 2.18-2.35L16.71 3a2.27 2.27 0 0 1 2.23 2.31l.14 14.66a1 1 0 0 1-.49.87 1 1 0 0 1-1 0l-5.7-3.16-5.29 3.23a1.2 1.2 0 0 1-.51.15zm5.76-5.55a1.11 1.11 0 0 1 .5.12l4.71 2.61-.12-12.95c0-.2-.13-.34-.21-.33l-9.6.09c-.08 0-.19.13-.19.33l.12 12.9 4.28-2.63a1.06 1.06 0 0 1 .51-.14z" 
-        fill="currentColor"
+        fill="${color}"
       />
     </g>
   `;
 }
 
-function userIconSvg() {
+function userIconSvg(color: string) {
   return `
     <!-- "User Heart Alt 1 SVG" by Dazzle UI, https://www.svgrepo.com/svg/532372/user-heart-alt-1 (CC Attribution) -->
     <g transform="scale(1.3)">
@@ -389,12 +391,15 @@ function userIconSvg() {
                C8.79086 11 7 9.20914 7 7
                C7 4.79086 8.79086 3 11 3
                C13.2091 3 15 4.79086 15 7Z"
-            fill="currentColor"
-      />
+        stroke="${color}"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
     </g>
   `;
 }
 
+/* ---------- Error SVG ---------- */
 function errorSvg(c: any, message: string) {
   const safeMessage = escapeXml(message);
 
