@@ -1,3 +1,5 @@
 name = "qiita-glyph"
 main = "src/index.ts"
-compatibility_date = "2026-01-17"
+compatibility_date = "2024-01-01"
+workers_dev = true
+compatibility_flags = ["nodejs_compat"]
