@@ -76,10 +76,13 @@ function resolveUsername(user: QiitaUser): string {
  */
 app.get("/:user_id", async (c) => {
   const userId = c.req.param("user_id");
+  const userId = c.req.param("user_id");
   const theme = c.req.query("theme") === "dark" ? "dark" : "light";
 
   const cache = caches.default; // Cloudflare Workers default cache
-  const cacheKey = new Request(c.req.url, { method: 'GET' });
+  const url = new URL(c.req.url);
+  url.searchParams.set("theme", theme);
+  const cacheKey = new Request(url.toString(), { method: 'GET' });
 
   const cachedResponse = await cache.match(cacheKey);
   if (cachedResponse) {
