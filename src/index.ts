@@ -80,6 +80,7 @@ app.get("/:user_id", async (c) => {
 
   const cache = caches.default; // Cloudflare Workers default cache
   const url = new URL(c.req.url);
+  url.search = "";
   url.searchParams.set("theme", theme);
   const cacheKey = new Request(url.toString(), { method: 'GET' });
 
@@ -151,7 +152,7 @@ export default {
 
 /* ---------- XML escape ---------- */
 function escapeXml(str: string) {
-  return str.replace(/[<>&"]/g, (c) =>
+  return str.replace(/[<>&"']/g, (c) =>
     ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" }[c]!)
   );
 }
@@ -172,11 +173,6 @@ async function imagetobase64(url: string): Promise<string> {
     res.headers.get("content-type") ?? "image/png";
 
   const buffer = await res.arrayBuffer();
-
-  if (typeof (globalThis as any).Buffer !== "undefined") {
-    const base64 = (globalThis as any).Buffer.from(buffer).toString("base64");
-    return `data:${contentType};base64,${base64}`;
-  }
 
   const bytes = new Uint8Array(buffer);
   const chunkSize = 0x8000;
@@ -233,8 +229,10 @@ function generateSvg(data: {
   return `
 <svg xmlns="http://www.w3.org/2000/svg" width="420" height="160" viewBox="0 0 420 160" role="img" aria-label="Qiita profile card for ${usernameEsc}">
   <defs>
-    <stop offset="0%" stop-color="${bgTop}" stop-opacity="1"/>
-    <stop offset="100%" stop-color="${bgBottom}" stop-opacity="1"/>
+    <linearGradient id="bgGrad" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="${bgTop}" stop-opacity="1"/>
+      <stop offset="100%" stop-color="${bgBottom}" stop-opacity="1"/>
+    </linearGradient>
 
     <linearGradient id="${accentGradId}" x1="0" x2="1">
       <stop offset="0%" stop-color="${accent}" stop-opacity="1"/>
@@ -291,7 +289,7 @@ function generateSvg(data: {
 
 function formatNumber(n: number) {
   try {
-    return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(n);
+    return new Intl.NumberFormat("ja-JP", { maximumFractionDigits: 0 }).format(n);
   } catch {
     return String(n);
   }
