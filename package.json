@@ -1,5 +1,5 @@
 {
-  "name": "@qiita-glyph",
+  "name": "qiita-glyph",
   "private": true,
   "type": "module",
   "scripts": {
